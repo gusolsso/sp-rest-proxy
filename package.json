@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index/RestProxy",
   "scripts": {
+    "prepare": "npm run build",
     "serve": "ts-node ./src/server",
     "build": "npm run lint && npm run clean && npm run tsc",
     "lint": "tslint -p .",
@@ -36,7 +37,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/tarball/affa955cd890d47984c4ae4a0e4342fb6dce5928",
+    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/#c963fb94f67d8fa2c430b5ce3c01b7f4967053a5",
     "node-sp-auth-config": "2.9.2",
     "socket.io": "^2.3.0",
     "sp-request": "^2.1.3"
