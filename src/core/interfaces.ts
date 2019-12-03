@@ -1,4 +1,4 @@
-import { IAuthOptions } from 'node-sp-auth';
+import { IOnpremiseTmgCredentials } from 'node-sp-auth';
 import { IAuthConfigSettings } from 'node-sp-auth-config';
 import { Router, Request } from 'express';
 import { Agent, Server as HttpsServer } from 'https';
@@ -38,7 +38,7 @@ export interface ISSLConf {
 export interface IProxyContext {
   siteUrl: string;
   proxyHostUrl: string;
-  authOptions?: IAuthOptions;
+  authOptions?: IOnpremiseTmgCredentials;
 }
 
 export interface IRouters {

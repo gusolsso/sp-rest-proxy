@@ -37,8 +37,8 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/#c963fb94f67d8fa2c430b5ce3c01b7f4967053a5",
-    "node-sp-auth-config": "2.9.2",
+    "node-sp-auth": "gusolsso/node-sp-auth#3fc5d8b8fff1867d37814cf6d51f963df40c91f3",
+    "node-sp-auth-config": "gusolsso/node-sp-auth-config#4b9e41a8d62892e8da3d5eca2abc3704f25a742d",
     "socket.io": "^2.3.0",
     "sp-request": "^2.1.3"
   },

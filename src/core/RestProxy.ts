@@ -10,14 +10,6 @@ import * as http from 'http';
 import { Logger } from '../utils/logger';
 import { RestGetRouter } from './routers/restGet';
 import { RestPostRouter } from './routers/restPost';
-import { RestBatchRouter } from './routers/restBatch';
-import { CsomRouter } from './routers/csom';
-import { SoapRouter } from './routers/soap';
-import { PostRouter } from './routers/genericPost';
-import { GetRouter } from './routers/genericGet';
-
-import { Server as GatewayServer } from '../gateway/server';
-import { Client as GatewayClient } from '../gateway/client';
 
 import {
   IProxySettings,
@@ -75,8 +67,6 @@ export default class RestProxy {
 
     this.routers = {
       apiRestRouter: express.Router(),
-      apiCsomRouter: express.Router(),
-      apiSoapRouter: express.Router(),
       genericPostRouter: express.Router(),
       genericGetRouter: express.Router()
     };
@@ -85,17 +75,6 @@ export default class RestProxy {
   // Server proxy main mode
   public serveProxy(callback?: IProxyCallback): void {
     this.serve(callback);
-  }
-
-  // Serve socket gateway server
-  public serveGateway = (settings: IGatewayServerSettings): void => {
-    new GatewayServer(settings, this.settings, this.app).init();
-  }
-
-  // Serve socker gateway client
-  public serveClient = (settings: IGatewayClientSettings): void => {
-    new GatewayClient(settings, this.settings).init();
-    this.serve();
   }
 
   // Keep public for backward compatibility
@@ -108,40 +87,6 @@ export default class RestProxy {
         ...ctx,
         proxyHostUrl: `${this.settings.protocol}://${this.settings.hostname}:${this.settings.port}`
       } as IProxyContext;
-
-      const bodyParserRaw = bodyParser.raw({
-        type: () => true, // '*/*', // To catch request without Content-Type header
-        limit: this.settings.rawBodyLimitSize,
-        verify: (req, _res, buf, encoding) => {
-          if (buf && buf.length) {
-            (req as any).rawBody = buf.toString(encoding || 'utf8');
-            (req as any).buffer = buf;
-          }
-        }
-      });
-
-      const bodyParserUrlencoded = bodyParser.urlencoded({ extended: true });
-
-      // REST - Files and attachments
-      this.routers.apiRestRouter.post(
-        `/*(${[
-          '/attachmentfiles/add',
-          '/files/add',
-          '/startUpload',
-          '/continueUpload',
-          '/finishUpload',
-          '/_layouts/15/Upload'
-        ].join('|')})*`,
-        bodyParserRaw,
-        new RestPostRouter(context, this.settings).router
-      );
-
-      // REST - Batch requests
-      this.routers.apiRestRouter.post(
-        '/[$]batch',
-        bodyParserRaw,
-        new RestBatchRouter(context, this.settings).router
-      );
 
       // REST - GET requests (JSON)
       this.routers.apiRestRouter.get(
@@ -179,43 +124,8 @@ export default class RestProxy {
         );
       })();
 
-      //  CSOM requests (XML)
-      this.routers.apiCsomRouter.post(
-        '/*',
-        bodyParserUrlencoded,
-        new CsomRouter(context, this.settings).router
-      );
-
-      //  SOAP requests (XML)
-      this.routers.apiSoapRouter.post(
-        '/*',
-        bodyParserUrlencoded,
-        new SoapRouter(context, this.settings).router
-      );
-
-      // Generic GET and static local content
-      this.routers.genericGetRouter.get(
-        '/*',
-        new GetRouter(context, this.settings).router
-      );
-
-      // Generic POST
-      this.routers.genericPostRouter.post(
-        '/*',
-        bodyParserUrlencoded,
-        new PostRouter(context, this.settings).router
-      );
-
-      // this.app.use(bodyParser.urlencoded({ extended: true }));
-
       this.app.use(cors());
       this.app.use('*/_api', this.routers.apiRestRouter);
-      this.app.use('*/_vti_bin/client.svc/ProcessQuery', this.routers.apiCsomRouter);
-      this.app.use('*/_vti_bin/*.asmx', this.routers.apiSoapRouter);
-
-      // SP2010 legacy REST API, issue #54
-      this.app.use('*/_vti_bin/ListData.svc', this.routers.genericPostRouter);
-      this.app.use('*/_vti_bin/ListData.svc', this.routers.genericGetRouter);
 
       this.app.use('/', this.routers.genericPostRouter);
       this.app.use('/', this.routers.genericGetRouter);
