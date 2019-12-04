@@ -20,6 +20,8 @@ import {
   IProxyCallback,
   IProxyErrorCallback
 } from './interfaces';
+import { GetRouter } from './routers/genericGet';
+import { PostRouter } from './routers/genericPost';
 
 export default class RestProxy {
 
@@ -88,6 +90,8 @@ export default class RestProxy {
         proxyHostUrl: `${this.settings.protocol}://${this.settings.hostname}:${this.settings.port}`
       } as IProxyContext;
 
+      const bodyParserUrlencoded = bodyParser.urlencoded({ extended: true });
+
       // REST - GET requests (JSON)
       this.routers.apiRestRouter.get(
         '/*',
@@ -101,6 +105,19 @@ export default class RestProxy {
           limit: this.settings.jsonPayloadLimitSize
         }),
         new RestPostRouter(context, this.settings).router
+      );
+
+      // Generic GET and static local content
+      this.routers.genericGetRouter.get(
+          '/*',
+          new GetRouter(context, this.settings).router
+      );
+
+      // Generic POST
+      this.routers.genericPostRouter.post(
+          '/*',
+          bodyParserUrlencoded,
+          new PostRouter(context, this.settings).router
       );
 
       // Put and Patch workaround issue #59
