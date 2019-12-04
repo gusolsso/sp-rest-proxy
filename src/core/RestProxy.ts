@@ -231,24 +231,7 @@ export default class RestProxy {
         }
       };
 
-      let server: http.Server | https.Server = null;
-      if (this.settings.protocol === 'https') {
-        if (typeof this.settings.ssl === 'undefined') {
-          // console.log('Error: No SSL settings provided!');
-          // return;
-          this.settings.ssl = {
-            cert: path.join(__dirname, './../../ssl/cert.crt'),
-            key: path.join(__dirname, './../../ssl/key.pem')
-          };
-        }
-        const options: https.ServerOptions = {
-          cert: fs.existsSync(this.settings.ssl.cert) ? fs.readFileSync(this.settings.ssl.cert) : this.settings.ssl.cert,
-          key: fs.existsSync(this.settings.ssl.key) ? fs.readFileSync(this.settings.ssl.key) : this.settings.ssl.key
-        };
-        server = https.createServer(options, this.app);
-      } else {
-        server = require('http').Server(this.app);
-      }
+      let server: http.Server = require('http').Server(this.app);
 
       if (server) {
         server.listen(this.settings.port, this.settings.hostname, () => {
