@@ -1,4 +1,4 @@
-import * as spauth from 'node-sp-auth';
+import * as spauth from 'sp-auth';
 import * as spRequest from 'sp-request';
 import { Request } from 'express';
 import { parse as urlParse } from 'url';

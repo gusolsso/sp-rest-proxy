@@ -1,5 +1,5 @@
-import { IAuthOptions } from 'node-sp-auth';
-import { IAuthConfigSettings } from 'node-sp-auth-config';
+import { IAuthOptions } from 'sp-auth';
+import { IAuthConfigSettings } from 'sp-auth-config';
 import { Router, Request } from 'express';
 import { Agent, Server as HttpsServer } from 'https';
 import { Server as HttpServer,IncomingMessage } from 'http';
