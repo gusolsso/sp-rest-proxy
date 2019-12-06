@@ -37,8 +37,8 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "node-sp-auth": "gusolsso/node-sp-auth#45e4cbd2daffc10e2a2aa48da47857e5bd60345f",
-    "node-sp-auth-config": "gusolsso/node-sp-auth-config#235024e6a9be476b57512239b41d2e5c83076bd3",
+    "sp-auth": "git+ssh://git@git.haxakon.se:2222/fmv/sp-auth.git",
+    "sp-auth-config": "git+ssh://git@git.haxakon.se:2222/fmv/sp-auth-config.git",
     "socket.io": "^2.3.0",
     "sp-request": "^2.1.3"
   },
